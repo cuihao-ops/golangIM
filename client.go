@@ -11,6 +11,7 @@ type Client struct {
 	ServerPort int
 	Name       string
 	conn       net.Conn
+	flag       int //当前client的模式
 }
 
 func NewClient(serverIp string, serverPort int) *Client {
@@ -18,6 +19,7 @@ func NewClient(serverIp string, serverPort int) *Client {
 	client := &Client{
 		ServerIp:   serverIp,
 		ServerPort: serverPort,
+		flag:       999,
 	}
 
 	//连接server
@@ -34,10 +36,48 @@ func NewClient(serverIp string, serverPort int) *Client {
 
 }
 
+func (client *Client) menu() bool {
+	var flag int
+	fmt.Println("1.公聊模式")
+	fmt.Println("2.私聊模式")
+	fmt.Println("3.更新用户名")
+	fmt.Println("0.退出")
+
+	fmt.Scanln(&flag)
+	if flag >= 0 && flag <= 3 {
+		client.flag = flag
+		return true
+	} else {
+		fmt.Println(">>>>>请输入合法范围内的数字<<<<<")
+		return false
+	}
+}
+
+func (client *Client) Run() {
+	for client.flag != 0 {
+		// for client.menu() != true {
+		// }
+		client.menu()
+
+		//根据不同的模式处理不同的业务
+		switch client.flag {
+		case 1:
+			//公聊模式
+			fmt.Println("公聊模式选择....")
+		case 2:
+			//私聊模式
+			fmt.Println("私聊模式选择....")
+		case 3:
+			//更新用户名
+			fmt.Println("更新用户名选择....")
+		}
+	}
+}
+
 var serverIp string
 var serverPort int
 
-//./client.exe -ip 127.0.0.1 -port 8888
+//./client.exe -ip 127.0.0.1 -port 8888 命令行格式
 
 func init() {
 	flag.StringVar(&serverIp, "ip", "127.0.0.1", "设置服务器IP地址(默认是127.0.0.1)")
@@ -57,5 +97,5 @@ func main() {
 	fmt.Println(">>>>> 连接服务器成功")
 
 	//启动客户端业务
-	select {}
+	client.Run()
 }
