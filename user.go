@@ -39,7 +39,7 @@ func (this *User) Online() {
 	this.server.mapLock.Unlock()
 
 	//广播当前用户上线的消息
-	this.server.BroadCast(this, "online")
+	this.server.BroadCast(this, "上线")
 }
 
 //用户的下线业务
@@ -49,8 +49,8 @@ func (this *User) Offline() {
 	delete(this.server.OnlineMap, this.Name)
 	this.server.mapLock.Unlock()
 
-	//广播当前用户上线的消息
-	this.server.BroadCast(this, "offline")
+	//广播当前用户下线的消息
+	this.server.BroadCast(this, "下线")
 }
 
 //给当前user对应的用户的客户端发消息
@@ -64,7 +64,7 @@ func (this *User) DoMessage(msg string) {
 		//查询当前在线用户都有哪些
 		this.server.mapLock.Lock()
 		for _, user := range this.server.OnlineMap {
-			onlineMsg := "[" + user.Addr + "]" + user.Name + ":" + "online\n"
+			onlineMsg := "[" + user.Addr + "]" + user.Name + ":" + "在线\n"
 			this.SendMsg(onlineMsg)
 		}
 		this.server.mapLock.Unlock()
@@ -107,8 +107,8 @@ func (this *User) DoMessage(msg string) {
 		if content == "" {
 			this.SendMsg("无消息内容，请重发\n")
 		}
-		shuo := "对你说"
-		remoteUser.SendMsg(this.Name+"%s", shuo+content)
+
+		remoteUser.SendMsg(this.Name + "对你说" + content)
 
 	} else {
 		this.server.BroadCast(this, msg)
